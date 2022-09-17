@@ -63,10 +63,10 @@ func SignIn(c echo.Context) error {
 func init() {
 	userMap = make(map[string]User, 10)
 
-	password, _ := secret.HashPassword("1234")
+	hashedPassword, _ := secret.HashPassword("1234")
 	userMap["admin"] = User{
 		Username: "admin",
-		Password: password,
+		Password: hashedPassword,
 		Role:     "admin",
 	}
 }
