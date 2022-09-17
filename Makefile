@@ -5,3 +5,6 @@ cert:
 run :
 	cd cmd/authserver
 	nodemon --exec go run ./cmd/authserver/ --signal SIGTERM
+
+runapi :
+	nodemon --exec go run ./cmd/apiserver/ --signal SIGTERM

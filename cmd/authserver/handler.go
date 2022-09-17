@@ -45,12 +45,12 @@ func SignIn(c echo.Context) error {
 
 	matched, err := secret.CheckPasswordAndHash(user.Password, foundUser.Password)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, respMsg{
+		return c.JSON(http.StatusInternalServerError, respMsg{
 			"message": "matching process failure",
 		})
 	}
 	if !matched {
-		c.JSON(http.StatusOK, respMsg{
+		return c.JSON(http.StatusOK, respMsg{
 			"message": "not matched",
 		})
 	}
@@ -58,6 +58,20 @@ func SignIn(c echo.Context) error {
 	// generate JWT
 
 	return c.JSON(http.StatusOK, respMsg{})
+}
+
+func GetJWKS(c echo.Context) error {
+	log.Println("get jwks")
+
+	// b, err := json.Marshal(JWKCache.Items())
+	// log.Println(err)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return c.JSON(http.StatusInternalServerError, respMsg{
+	// 		"message": err.Error(),
+	// 	})
+	// }
+	return c.JSON(http.StatusOK, JWKCache.Items())
 }
 
 func init() {

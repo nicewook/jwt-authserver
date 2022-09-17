@@ -24,7 +24,7 @@ type EdDSAKey struct {
 	Alg        string             `json:"alg,omitempty"`
 	Crv        string             `json:"crv",omitempty`
 	X          string             `json:"x,omitempty"` // base64 encoded public key
-	Use        string             `json:"sig,omitempty"`
+	Use        string             `json:"use,omitempty"`
 	privateKey ed25519.PrivateKey // it will not be marshaled
 	Exp        int64              `json:"exp,omitempty"`
 }
