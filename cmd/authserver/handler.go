@@ -38,7 +38,7 @@ func SignIn(c echo.Context) error {
 
 	foundUser, ok := userMap[user.Username]
 	if !ok {
-		c.JSON(http.StatusOK, respMsg{
+		return c.JSON(http.StatusUnauthorized, respMsg{
 			"message": fmt.Sprintf("not exist user: %v", user.Username),
 		})
 	}
@@ -56,8 +56,16 @@ func SignIn(c echo.Context) error {
 	}
 
 	// generate JWT
+	token, err := CreateJWT(Key.privateKey, foundUser)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, respMsg{
+			"message": "creating JWT failure",
+		})
+	}
 
-	return c.JSON(http.StatusOK, respMsg{})
+	return c.JSON(http.StatusOK, respMsg{
+		"accessToken": token,
+	})
 }
 
 func GetJWKS(c echo.Context) error {

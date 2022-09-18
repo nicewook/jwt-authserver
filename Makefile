@@ -3,7 +3,6 @@ cert:
 	openssl req -new -x509 -sha256 -key server.key -out server.crt -days 365
 
 run :
-	cd cmd/authserver
 	nodemon --exec go run ./cmd/authserver/ --signal SIGTERM
 
 runapi :

@@ -6,10 +6,9 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/hex"
-	"log"
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/patrickmn/go-cache"
 )
@@ -90,7 +89,7 @@ func keyManager() error {
 type jwtCustomClaims struct {
 	Username string `json:"username"`
 	Role     string `json:"role"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 func JWTConfig(publicKey []byte) middleware.JWTConfig {
@@ -100,22 +99,23 @@ func JWTConfig(publicKey []byte) middleware.JWTConfig {
 	}
 }
 
-func CreateJWT(privateKey ed25519.PrivateKey) (string, error) {
+func CreateJWT(privateKey ed25519.PrivateKey, user User) (string, error) {
 
-	log.Printf("privateKey Type %T", privateKey)
 	// Set custom claims
 	claims := &jwtCustomClaims{
-		Username: "user1",
-		Role:     "administrator",
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(jwtExpireDuation).Unix(),
+		Username: user.Username,
+		Role:     user.Role,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer: "https://www.example.com",
+			ExpiresAt: jwt.NewNumericDate(
+				time.Now().Add(jwtExpireDuation),
+			),
 		},
 	}
-
 	// Create token with claims
 	token := jwt.NewWithClaims(jwt.SigningMethodEdDSA, claims)
+	token.Header["kid"] = Key.Kid
 
-	// Generate encoded token and send it as response.
-	// test
+	// Generate signed token and send it as response.
 	return token.SignedString(privateKey)
 }
