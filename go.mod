@@ -5,7 +5,6 @@ go 1.19
 require (
 	github.com/alexedwards/argon2id v0.0.0-20211130144151-3585854a6387
 	github.com/golang-jwt/jwt v3.2.2+incompatible
-	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/labstack/echo/v4 v4.9.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	golang.org/x/crypto v0.0.0-20220427172511-eb4f295cb31f

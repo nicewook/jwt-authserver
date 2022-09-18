@@ -8,7 +8,7 @@ import (
 	"encoding/hex"
 	"time"
 
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/patrickmn/go-cache"
 )
@@ -21,7 +21,7 @@ type EdDSAKey struct {
 	Kty        string             `json:"kty,omitempty"`
 	Kid        string             `json:"kid,omitempty"`
 	Alg        string             `json:"alg,omitempty"`
-	Crv        string             `json:"crv",omitempty`
+	Crv        string             `json:"crv,omitempty"`
 	X          string             `json:"x,omitempty"` // base64 encoded public key
 	Use        string             `json:"use,omitempty"`
 	privateKey ed25519.PrivateKey // it will not be marshaled
@@ -32,6 +32,7 @@ func NewEdDSAKey() EdDSAKey {
 	return EdDSAKey{
 		Kty: "OKP",
 		Alg: "EdDSA",
+		Crv: "Ed25519",
 		Use: "sig",
 	}
 }
@@ -89,7 +90,7 @@ func keyManager() error {
 type jwtCustomClaims struct {
 	Username string `json:"username"`
 	Role     string `json:"role"`
-	jwt.RegisteredClaims
+	jwt.StandardClaims
 }
 
 func JWTConfig(publicKey []byte) middleware.JWTConfig {
@@ -105,11 +106,9 @@ func CreateJWT(privateKey ed25519.PrivateKey, user User) (string, error) {
 	claims := &jwtCustomClaims{
 		Username: user.Username,
 		Role:     user.Role,
-		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer: "https://www.example.com",
-			ExpiresAt: jwt.NewNumericDate(
-				time.Now().Add(jwtExpireDuation),
-			),
+		StandardClaims: jwt.StandardClaims{
+			Issuer:    "https://www.example.com",
+			ExpiresAt: time.Now().Add(jwtExpireDuation).Unix(),
 		},
 	}
 	// Create token with claims

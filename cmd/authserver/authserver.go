@@ -36,7 +36,7 @@ func init() {
 			if err := keyManager(); err != nil {
 				log.Println(err)
 			}
-			time.Sleep((10 * time.Second))
+			time.Sleep((10 * time.Minute))
 		}
 	}()
 

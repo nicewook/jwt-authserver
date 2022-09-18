@@ -79,7 +79,13 @@ func GetJWKS(c echo.Context) error {
 	// 		"message": err.Error(),
 	// 	})
 	// }
-	return c.JSON(http.StatusOK, JWKCache.Items())
+	items := JWKCache.Items()
+	jwks := make(map[string]EdDSAKey, len(items))
+	for kid, value := range items {
+		jwks[kid] = value.Object.(EdDSAKey)
+	}
+
+	return c.JSON(http.StatusOK, jwks)
 }
 
 func init() {

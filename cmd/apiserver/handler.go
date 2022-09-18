@@ -22,6 +22,12 @@ func Hello(c echo.Context) error {
 		"message": "Hello, I am API server",
 	})
 }
+func HelloJWT(c echo.Context) error {
+	log.Println("hello")
+	return c.JSON(http.StatusOK, map[string]string{
+		"message": "Hello, I am API server with JWT",
+	})
+}
 
 // func SignIn(c echo.Context) error {
 // 	log.Println("sign in")
